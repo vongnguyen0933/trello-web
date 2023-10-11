@@ -14,13 +14,13 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd'
 
 
 const MENU_STYLES = {
-  color: 'primary.main',
-  bgcolor: 'white',
+  color: 'white',
+  bgcolor: 'transparent',
   border: 'none',
   paddingX: '5px',
   borderRadius: '4px',
-  '& .MuiSvgIcon-root': {
-    color: 'primary.main'
+  '.MuiSvgIcon-root': {
+    color: 'white'
   },
   '&:hover': {
     bgcolor: 'primary.50'
@@ -38,7 +38,8 @@ function BoardBar() {
       paddingX: 2,
       gap: 2,
       overflowX: 'auto',
-      borderTop: '1px solid #00bfa5'
+      bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495e' : '#1976d2'),
+      borderBottom: '1px solid #00bfa5'
     }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         <Chip
@@ -73,15 +74,43 @@ function BoardBar() {
         />
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        <Button variant="outlined" startIcon={<PersonAddIcon />}>Invite</Button>
+        <Button
+          sx={{
+            color: 'white',
+            borderColor: 'white',
+            '&:hover': {
+              borderColor: 'white'
+            }
+          }}
+          variant="outlined"
+          startIcon={<PersonAddIcon />}
+        >
+          Invite
+        </Button>
         <AvatarGroup max={4} sx={{
+          gap: '10px',
           '& .MuiAvatar-root': {
             width: 34,
             height: 34,
-            fontSize: 16
-
+            fontSize: 16,
+            border: 'none'
           }
         }}>
+          <Tooltip title="xuanvongdev">
+            <Avatar alt="Xuanvongdev" src="https://avatars.githubusercontent.com/u/108794680?v=4" />
+          </Tooltip>
+          <Tooltip title="xuanvongdev">
+            <Avatar alt="Xuanvongdev" src="https://avatars.githubusercontent.com/u/108794680?v=4" />
+          </Tooltip>
+          <Tooltip title="xuanvongdev">
+            <Avatar alt="Xuanvongdev" src="https://avatars.githubusercontent.com/u/108794680?v=4" />
+          </Tooltip>
+          <Tooltip title="xuanvongdev">
+            <Avatar alt="Xuanvongdev" src="https://avatars.githubusercontent.com/u/108794680?v=4" />
+          </Tooltip>
+          <Tooltip title="xuanvongdev">
+            <Avatar alt="Xuanvongdev" src="https://avatars.githubusercontent.com/u/108794680?v=4" />
+          </Tooltip>
           <Tooltip title="xuanvongdev">
             <Avatar alt="Xuanvongdev" src="https://avatars.githubusercontent.com/u/108794680?v=4" />
           </Tooltip>

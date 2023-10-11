@@ -1,5 +1,5 @@
 import { experimental_extendTheme as extendTheme } from '@mui/material/styles'
-import { cyan, deepOrange, orange, teal } from '@mui/material/colors'
+// import { cyan, deepOrange, orange, teal } from '@mui/material/colors'
 
 // Create a theme instance.
 const theme = extendTheme({
@@ -8,18 +8,18 @@ const theme = extendTheme({
     boardBarHeight: '58px'
   },
   colorSchemes: {
-    light: {
-      palette: {
-        primary: teal,
-        secondary: deepOrange
-      }
-    },
-    dark: {
-      palette: {
-        primary: cyan,
-        secondary: orange
-      }
-    }
+    // light: {
+    //   palette: {
+    //     primary: teal,
+    //     secondary: deepOrange
+    //   }
+    // },
+    // dark: {
+    //   palette: {
+    //     primary: cyan,
+    //     secondary: orange
+    //   }
+    // }
   },
   components: {
     MuiCssBaseline: {
@@ -30,11 +30,11 @@ const theme = extendTheme({
             height: '8px'
           },
           '*::-webkit-scrollbar-thumb': {
-            backgroundColor: '#bdc3c7',
+            backgroundColor: '#dcdde1',
             borderRadius: '8px'
           },
           '*::-webkit-scrollbar-thumb:hover': {
-            backgroundColor: '#27ae60'
+            backgroundColor: 'white'
           }
         }
       }
@@ -42,34 +42,38 @@ const theme = extendTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          textTransform: 'none'
+          textTransform: 'none',
+          borderWidth: '1px',
+          '&:hover ': {
+            borderWidth: '2px'
+          }
         }
       }
     },
     MuiInputLabel: {
       styleOverrides: {
-        root: ({ theme }) => ({
-          color: theme.palette.primary.main,
-          fontSize: '0.875rem'
-        })
+        // root: ({ theme }) => ({
+        //   // color: theme.palette.primary.main,
+        //   fontSize: '0.875rem'
+        // })
       }
     },
     MuiOutlinedInput: {
       styleOverrides: {
         root: ({ theme }) => ({
-          color: theme.palette.primary.main,
+          // color: theme.palette.primary.main,
           fontSize: '0.875rem',
-          '.MuiOutlinedInput-notchedOutline': {
-            borderColor: 'theme.palette.primary.light'
-          },
-          '&:hover': {
-            '.MuiOutlinedInput-notchedOutline': {
-              borderColor: 'theme.palette.primary.main'
-            }
-          },
-          '& fieldset': {
-            borderWidth: '1px !important'
-          }
+          // '.MuiOutlinedInput-notchedOutline': {
+          //   borderColor: 'theme.palette.primary.light'
+          // },
+          // '&:hover': {
+          //   '.MuiOutlinedInput-notchedOutline': {
+          //     borderColor: 'theme.palette.primary.main'
+          //   }
+          // },
+          '& fieldset': { borderWidth: '1px !important' },
+          '&:hover fieldset': { borderWidth: '2px !important' },
+          '&.Mui-focused fieldset': { borderWidth: '2px !important' }
         })
       }
     }
