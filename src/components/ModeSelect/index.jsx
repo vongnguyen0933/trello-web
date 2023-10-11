@@ -19,7 +19,7 @@ function ModeSelect() {
 
   return (
     <Box >
-      <FormControl sx={{ m: 1, minWidth: 100 }} size='small'>
+      <FormControl sx={{ m: 1, minWidth: 120 }} size='small'>
         <InputLabel id="label-select-dark-light-mode">Mode</InputLabel>
         <Select
           labelId="label-select-dark-light-mode"
