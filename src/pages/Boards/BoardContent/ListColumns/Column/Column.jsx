@@ -28,7 +28,7 @@ import { toast } from 'react-toastify'
 import TextField from '@mui/material/TextField'
 
 
-function Column({ column }) {
+function Column({ column, createNewCard }) {
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: column._id,
@@ -56,17 +56,43 @@ function Column({ column }) {
   const toggleOpenNewCardForm = () => setOpenNewCardForm(!openNewCardForm)
   const [newCardTitle, setNewCardTitle] = useState('')
 
-  const addNewCard = () => {
+  const addNewCard = async () => {
     if (!newCardTitle) {
-      toast.error('Please enter card title', { position: 'top-center' })
+      toast.error('Please enter card title', { position: 'bottom-right' })
       return
     }
-    console.log(newCardTitle)
-    // Goi API
+
+    const newCardData = {
+      title: newCardTitle,
+      columnId: column._id
+    }
+
+    await createNewCard(newCardData)
+
     // Đóng lại trạng thái thêm Card
     toggleOpenNewCardForm()
     setNewCardTitle('')
   }
+
+  const addNewCard1 = async () => {
+    if (!newCardTitle) {
+      toast.error('Please enter card title', { position: 'bottom-right' })
+      return
+    }
+    // Tạo dữ liệu Column để gọi API
+    const newCardData = {
+      title: newCardTitle,
+      columnId: column._id
+
+    }
+    await createNewCard(newCardData)
+
+    // Đóng lại trạng thái thêm Column
+    toggleOpenNewCardForm()
+    setNewCardTitle('')
+  }
+
+
   return (
     <div ref={setNodeRef}
       style={dndKitColumnStyles}
@@ -152,13 +178,9 @@ function Column({ column }) {
         <ListCards
           // cards={column?.cards}
           cards={orderedCards}
-
         />
-
-
         {/* Box Column Footer */}
         <Box
-          onClick={addNewCard}
           sx={{
             height: (theme) => theme.trello.columnFooterHeight,
             p: 2
@@ -189,6 +211,7 @@ function Column({ column }) {
                 size='small'
                 variant='outlined'
                 autoFocus
+                data-no-dnd="true"
                 value={newCardTitle}
                 onChange={(e) => setNewCardTitle(e.target.value)}
                 sx={{
@@ -209,10 +232,14 @@ function Column({ column }) {
                 }}
               />
               <Box
-                onClick={addNewCard}
                 sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
               >
-                <Button variant='contained' color='success' size='small'
+                <Button
+                  data-no-dnd="true"
+                  variant='contained'
+                  color='success'
+                  size='small'
+                  onClick={addNewCard}
                   sx={{
                     boxShadow: 'none',
                     border: '0.5px solid',
