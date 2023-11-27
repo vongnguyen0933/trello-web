@@ -10,14 +10,17 @@ import {
   DndContext,
   // PointerSensor,
   closestCorners,
-  MouseSensor,
-  TouchSensor,
+  // MouseSensor,
+  // TouchSensor,
   useSensor,
   useSensors,
   DragOverlay,
-  defaultDropAnimationSideEffects,
+  defaultDropAnimationSideEffects
 } from '@dnd-kit/core'
-import { cloneDeep } from 'lodash'
+
+import { MouseSensor, TouchSensor } from '~/customLibraries/DndKitSensors'
+import { cloneDeep, isEmpty } from 'lodash'
+import { generatePlaceholderCard } from '~/utils/formatters'
 
 
 const ACTIVE_DRAG_ITEM_TYPE = {
@@ -26,7 +29,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
 
 }
 
-function BoardContent({ board }) {
+function BoardContent({ board, createNewColumn, createNewCard, moveColumn }) {
   // Nếu dùng pointerSenser mặc định thì phải kết hợp với thuộc tính CSS touchAction: none ở phần tử kéo thả 
   // const pointerSensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
 
@@ -89,6 +92,10 @@ function BoardContent({ board }) {
         // Xoá card ở cái column active (cũng có thể hiểu là column cũ, cái lúc mà kéo card ra khỏi nó để sang column khác)
         nextActiveColumn.cards = nextActiveColumn.cards.filter(card => card._id !== activeDraggingCardId)
 
+        // Thêm placeholder card nếu column đó rỗng
+        if (isEmpty(nextActiveColumn.cards)) {
+          nextActiveColumn.cards = [generatePlaceholderCard(nextActiveColumn)]
+        }
         //Cập nhật lại mảng cardOrderIds cho chuẩn dữ liệu
         nextActiveColumn.cardOrderIds = nextActiveColumn.cards.map(card => card._id)
       }
@@ -107,8 +114,11 @@ function BoardContent({ board }) {
         //Tiếp theo là thêm cái card đang kéo vào overColumn theo vị trí index mới 
         nextOverColumn.cards = nextOverColumn?.cards.toSpliced(newCardIndex, 0, rebuild_activeDraggingCardData)
 
+        //Xoá placeholderCard đi nếu nó đang tồn tại
+        nextOverColumn.cards = nextOverColumn.cards.filter(card => !card.FE_PlaceholderCard)
+
         //Cập nhật lại mảng cardOrderIds cho chuẩn dữ liệu
-        nextActiveColumn.cardOrderIds = nextActiveColumn.cards.map(card => card._id)
+        nextOverColumn.cardOrderIds = nextOverColumn.cards.map(card => card._id)
       }
 
       return nextColumns
@@ -175,6 +185,7 @@ function BoardContent({ board }) {
     // Cần đảm bảo nếu không tồn tại active hoặc over (khi kéo ra khỏi container) thì không làm gì 
     if (!active || !over) return
 
+    // Xử lý keo thả card
     if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.CARD) {
       // activeDraggingCardId: là id của card đang được kéo
       const { id: activeDraggingCardId, data: { current: activeDraggingCardData } } = active
@@ -240,13 +251,13 @@ function BoardContent({ board }) {
 
         //Dùng arrayMove của dnd-kit để sắp xếp lại mảng
         //Code của arrayMove ở: dnd-kit/packages/sortable/src/utilities/arrayMove.ts
-        const dndOrderedColumn = arrayMove(orderedColumnState, oldColumnIndex, newColumnIndex)
-        // console.log('dndOrderedColumn: ', dndOrderedColumn)
-        // const dndOrderedColumnIds = dndOrderedColumn.map(c => c._id)
-        // console.log(dndOrderedColumnIds)
+        const dndOrderedColumns = arrayMove(orderedColumnState, oldColumnIndex, newColumnIndex)
+
+        //Gọi lên props function moveColumn nằm ở component cha cao nhất( _id.jsx)
+        moveColumn(dndOrderedColumns)
 
         //Cập nhật state sau khi kéo thả
-        setOrderColumnState(dndOrderedColumn)
+        setOrderColumnState(dndOrderedColumns)
       }
 
     }
@@ -285,7 +296,9 @@ function BoardContent({ board }) {
         display: 'flex'
       }}>
         <ListColumns
-          // columns={board?.columns} 
+          // columns={board?.columns}
+          createNewColumn={createNewColumn}
+          createNewCard={createNewCard}
           columns={orderedColumnState}
         />
         <DragOverlay dropAnimation={customdropAnimation}>
