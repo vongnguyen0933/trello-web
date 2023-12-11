@@ -18,7 +18,6 @@ import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import { useState } from 'react'
 import ListCards from './ListCards/ListCards'
-import { mapOrder } from '~/utils/sorts'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import CloseIcon from '@mui/icons-material/Close'
@@ -50,13 +49,13 @@ function Column({ column, createNewCard }) {
   const handleClick = (event) => { setAnchorEl(event.currentTarget) }
   const handleClose = () => { setAnchorEl(null) }
 
-  const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
+  const orderedCards = column.cards
 
   const [openNewCardForm, setOpenNewCardForm] = useState(false)
   const toggleOpenNewCardForm = () => setOpenNewCardForm(!openNewCardForm)
   const [newCardTitle, setNewCardTitle] = useState('')
 
-  const addNewCard = async () => {
+  const addNewCard = () => {
     if (!newCardTitle) {
       toast.error('Please enter card title', { position: 'bottom-right' })
       return
@@ -67,27 +66,9 @@ function Column({ column, createNewCard }) {
       columnId: column._id
     }
 
-    await createNewCard(newCardData)
+    createNewCard(newCardData)
 
     // Đóng lại trạng thái thêm Card
-    toggleOpenNewCardForm()
-    setNewCardTitle('')
-  }
-
-  const addNewCard1 = async () => {
-    if (!newCardTitle) {
-      toast.error('Please enter card title', { position: 'bottom-right' })
-      return
-    }
-    // Tạo dữ liệu Column để gọi API
-    const newCardData = {
-      title: newCardTitle,
-      columnId: column._id
-
-    }
-    await createNewCard(newCardData)
-
-    // Đóng lại trạng thái thêm Column
     toggleOpenNewCardForm()
     setNewCardTitle('')
   }
