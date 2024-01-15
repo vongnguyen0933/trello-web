@@ -11,11 +11,14 @@ import {
   fetchBoardDetailsAPI,
   updateBoardDetailsAPI,
   updateColumnDetailsAPI,
-  moveCardToDifferentColumAPI
+  moveCardToDifferentColumAPI,
+  deleteColumnDetailsAPI
 } from '~/apis'
 import { generatePlaceholderCard } from '~/utils/formatters'
 import { isEmpty } from 'lodash'
 import { mapOrder } from '~/utils/sorts'
+import { toast } from 'react-toastify'
+
 
 function Board() {
   const [board, setBoard] = useState(null)
@@ -61,7 +64,6 @@ function Board() {
       ...newCardData,
       boardId: board._id
     })
-
 
     // Cập nhật state board
     const newBoard = { ...board }
@@ -132,6 +134,19 @@ function Board() {
       <Box>Loading...</Box>
     )
   }
+  // Xử lý xoá 1 Column hoặc card bên trong nó
+  const deleteColumnDetails = (columnId) => {
+
+    const newBoard = { ...board }
+    newBoard.columns = newBoard.columns.filter(c => c._id !== columnId)
+    newBoard.columnOrderIds = newBoard.columnOrderIds.filter(_id => _id !== columnId)
+    setBoard(newBoard)
+
+    deleteColumnDetailsAPI(columnId).then(res => {
+      toast.success(res?.deleteResult)
+    })
+
+  }
   return (
     <Container disableGutters maxWidth={false} sx={{ height: '100vh' }}>
       <AppBar />
@@ -143,6 +158,7 @@ function Board() {
         moveColumns={moveColumns}
         moveCardInTheSameColumn={moveCardInTheSameColumn}
         moveCardToDifferentColum={moveCardToDifferentColum}
+        deleteColumnDetails={deleteColumnDetails}
       />
 
     </Container>
